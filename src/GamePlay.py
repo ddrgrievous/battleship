@@ -1,8 +1,9 @@
 
 from Board import Board
-from AI import AI  
+from AI import AI_Novice  
 from AI_Easy import AI_Easy   
-from Start_Player import Start_Player  
+from Start_Player import Start_Player
+  
 from Player import Player
 from copy import copy, deepcopy
 import time
@@ -125,7 +126,7 @@ if __name__ == '__main__':
     games_played = 0
     tron_wins = 0
     clu_wins = 0
-    while games_played < 1000:
+    while games_played < 10000:
         ships = {'P' : 2, # Patrol Boat
                  'D' : 3, # Destroyer
                  'S' : 3, # Submarine
@@ -133,7 +134,7 @@ if __name__ == '__main__':
                  'A' : 5  # Aircraft Carrier
                  }
         # create tron
-        tron = AI()
+        tron = AI_Novice()
         tron_board = Board(10,10)
         tron.place_ships(tron_board, ships)
         original_tron = Board(10,10)

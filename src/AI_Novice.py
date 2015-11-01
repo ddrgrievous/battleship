@@ -6,7 +6,7 @@ Created on Oct 22, 2015
 from copy import copy, deepcopy
 import random
 from random import randint
-class AI(object):
+class AI_Novice(object):
     '''
     classdocs
     '''
