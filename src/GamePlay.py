@@ -1,6 +1,7 @@
 
 from Board import Board
-from AI import AI_Novice  
+from AI_Intermediate import AI_Intermediate
+from AI_Novice import AI_Novice  
 from AI_Easy import AI_Easy   
 from Start_Player import Start_Player
   
@@ -134,14 +135,14 @@ if __name__ == '__main__':
                  'A' : 5  # Aircraft Carrier
                  }
         # create tron
-        tron = AI_Novice()
+        tron = AI_Intermediate()
         tron_board = Board(10,10)
         tron.place_ships(tron_board, ships)
         original_tron = Board(10,10)
         original_tron.spaces = deepcopy(tron_board.spaces);
         
         # create clu
-        clu = AI_Easy()
+        clu = AI_Novice()
         clu_board = Board(10,10)
         clu.place_ships(clu_board, ships)
         original_clu = Board(10,10)

@@ -51,18 +51,75 @@ class AI_Intermediate(object):
                 
         return spaces 
     
+    def is_not_out_of_bounds(self, point, user_board):
+        if point[0] > len(user_board.spaces) - 1:
+            return False
+        elif point[0] < 0:
+            return False
+        elif point[1] > len(user_board.spaces[len(user_board.spaces) - 1]) - 1:
+            return False
+        elif point[1] < 0:
+            return False
+        else:
+            return True
+    
     def find_open_space(self, user_board, point):
         open = True
-        open_space_count = 1
-        i = 1
-        # find spaces verticle
-        while open:
-            if user_board[point[0]][point[1 + i]] == ' ':
-                open_space_count +=1
-            if
+        #count starting space so start at 1
+        open_vert = 1
+        open_hori = 1
         
-        # find spaces horizontal
-
+        
+        i = 1
+        # check right
+        while open:
+            if self.is_not_out_of_bounds([point[0],point[1] + i], user_board):
+                if user_board.spaces[point[0]][point[1] + i] != 'O' and user_board.spaces[point[0]][point[1] + i] != '*':
+                    open_hori +=1
+                    i += 1
+                else:        
+                    open = False
+            else:
+                open = False
+        i = 1
+        open = True
+        #check left
+        while open:  
+            if self.is_not_out_of_bounds([point[0],point[1] - i], user_board):      
+                if user_board.spaces[point[0]][point[1] - i] != 'O' and user_board.spaces[point[0]][point[1] - i] != '*':
+                    open_hori += 1
+                    i += 1
+                else:
+                    open = False
+            else:
+                open = False
+        i = 1
+        open = True
+        # find spaces verticle
+        # check down
+        while open:
+            if self.is_not_out_of_bounds([point[0] + i,point[1]], user_board):
+                if user_board.spaces[point[0] + i][point[1]] != 'O' and user_board.spaces[point[0] + i][point[1]] != '*':
+                    open_vert +=1
+                    i += 1
+                else:        
+                    open = False
+            else:
+                open = False
+        i = 1
+        open = True         
+        # check up       
+        while open:
+            if self.is_not_out_of_bounds([point[0] - i,point[1]], user_board):
+                if user_board.spaces[point[0] - i][point[1]] != 'O' and user_board.spaces[point[0] - i][point[1]] != '*':
+                    open_vert +=1
+                    i += 1
+                else:        
+                    open = False 
+            else:
+                open = False
+                
+        return [open_vert, open_hori]
     def find_ship_location(self,size,stats):
         lowest_num = 99
         # array of points (x,y)
@@ -176,6 +233,9 @@ class AI_Intermediate(object):
              
     def sink_ship(self): 
         self.distance += 1
+            
+        if self.attempt == 5:
+            self.attempt = 1
         # down
         if self.attempt == 1:
             return [self.first_hit[0] + self.distance, self.first_hit[1]]
@@ -227,6 +287,12 @@ class AI_Intermediate(object):
             user_board.spaces[point[0]][point[1]] = 'X'
             if not self.sinking_ship:
                 self.first_hit = point
+                # do a check to see which direction to start shooting the ship
+                open_space = self.find_open_space(user_board, self.first_hit)
+                
+                # if there are more spaces horizontally open then start on attempt 3        
+                if open_space[0] < open_space[1]:
+                    self.attempt = 3
             if self.sinking_ship:
                 self.get_direction()
             self.sinking_ship = True
