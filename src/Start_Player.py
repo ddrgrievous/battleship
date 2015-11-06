@@ -25,7 +25,20 @@ class Start_Player(object):
         '''
         Constructor
         '''
-        pass
+        self.ship_stats = []
+        row_num = 0
+        for i in range(0,10):
+            self.ship_stats.append([])
+            
+            
+        # loop through the file to get the stats       
+        with open('ship_stats.txt') as openfileobject:
+            for line in openfileobject:
+                self.ship_stats[row_num] = line.replace("\n", "").split(',')
+                row_num += 1
+        
+        print self.ship_stats
+                
     def parse_input(self, input):
         point = []
         if(len(input) >= 3 or input[0].isdigit() or input[1].isalpha()):
@@ -49,10 +62,9 @@ class Start_Player(object):
         elif x > 0:
             self.direction = "up"
             
-        print self.direction
         x = abs(x)
         y = abs(y)
-        print 'x: ' + str(x) + ' y: ' + str(y)
+    
         if (x == 0):
             return y
         elif (y == 0):
@@ -148,11 +160,12 @@ class Start_Player(object):
                 # assign
                 point2[0] = i 
         
-        print ship_points
         for i in range(len(ship_points)):
             board.spaces[ship_points[i][0]][ship_points[i][1]] = key  
                
-              
+        for i in range(len(ship_points)):
+            self.ship_stats[ship_points[i][0]][ship_points[i][1]] = int(self.ship_stats[ship_points[i][0]][ship_points[i][1]]) + 1 
+                  
         # all went well 
         return True  
     def place_ships(self, board, ships):
@@ -201,9 +214,6 @@ class Start_Player(object):
                     # determine the size of the ship they have created
                     size = self.find_ship_length(point1,point2) + 1
                     
-                    # for debug
-                    print size
-                    
                     # if point array has 2 values and the space doesn't have a ship already
                     if len(point1) == 2 and size == ships[key]:
                         inputing = False
@@ -214,5 +224,15 @@ class Start_Player(object):
                             print "overlapping ship"  
                     else:
                         print "invalid input size"  
+        
+        ship_stats_file = open('ship_stats.txt','w')
+        s = "";
+        for i in range(len(self.ship_stats)):
+            s = "";
+            for j in range(len(self.ship_stats)):
+                if j == 0:
+                    s += str(self.ship_stats[i][j])
+                else:
+                    s += ',' + str(self.ship_stats[i][j])
             
-          
+            ship_stats_file.write(s +'\n')
