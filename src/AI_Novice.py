@@ -49,6 +49,9 @@ class AI_Novice(object):
                 spaces[row_num] = line.replace("\n", "").split(',')
                 row_num += 1
                 
+        for i in range(len(spaces)):
+            for j in range(len(spaces)):
+                spaces[i][j] = str(int(spaces[i][j]) + randint(0,9))
         return spaces 
 
 

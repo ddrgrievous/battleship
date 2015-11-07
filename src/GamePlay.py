@@ -25,10 +25,10 @@ def player_vs_computer():
             clu = AI_Easy()
             not_valid_input = False
         elif level.lower() == 'medium':
-            clu = AI_Novice()
+            clu = AI_Intermediate()
             not_valid_input = False
         elif level.lower() == 'hard':
-            clu = AI_Intermediate()
+            clu = AI_Expert()
             not_valid_input = False
     
     
@@ -38,9 +38,7 @@ def player_vs_computer():
              'B' : 4, # Battleship
              'A' : 5  # Aircraft Carrier
              }
-    
-    
-    
+       
     # create the user_board
     user_board = Board(10,10)
     user_hit_board = Board(10,10)
@@ -226,6 +224,6 @@ if __name__ == '__main__':
     print "**********************"
     print "Welcome to Battleship!"
     print "**********************"
-    player_vs_computer()
-    # computer_vs_computer_many()  
+    #player_vs_computer()
+    computer_vs_computer_many()  
     # computers_vs_computer_one() 

@@ -4,6 +4,8 @@ Created on Oct 22, 2015
 @author: Jared
 '''
 from copy import copy, deepcopy
+from sysconfig import sys
+import string
 import random
 from random import randint
 import operator
@@ -35,7 +37,31 @@ class AI_Expert(object):
              'B' : 4, # Battleship
              'A' : 5  # Aircraft Carrier
              }
-
+        self.heat_map = []
+        row_num = 0
+        for i in range(0,10):
+            self.heat_map.append([])
+            
+            
+        # loop through the file to get the stats       
+        with open('heat_map.txt') as openfileobject:
+            for line in openfileobject:
+                self.heat_map[row_num] = line.replace("\n", "").split(',')
+                row_num += 1
+        
+        openfileobject.close()       
+    def display_heat(self):
+        sys.stdout.write("  ")
+        for i in range(0, len(self.heat_map)):
+            sys.stdout.write( " " + str(i))
+            
+        for y in range(0,len(self.heat_map)):              
+            for x in range(0, len(self.heat_map[y])):
+                if x == 0:
+                    print "\n" + string.ascii_uppercase[y] + " |" + self.heat_map[y][x] + "|",
+                else:                
+                    sys.stdout.write(self.heat_map[y][x] + "|")
+        print'\n'
     def read_stats(self):
         # setup our array
         spaces = []
@@ -49,7 +75,10 @@ class AI_Expert(object):
             for line in openfileobject:
                 spaces[row_num] = line.replace("\n", "").split(',')
                 row_num += 1
-                
+        for i in range(len(spaces)):
+            for j in range(len(spaces)):
+                spaces[i][j] = str(int(spaces[i][j]) + randint(0,9))  
+                   
         return spaces 
     
     def is_not_out_of_bounds(self, point, user_board):
@@ -175,31 +204,24 @@ class AI_Expert(object):
             stats[points[i][0]][points[i][1]] = '999' 
   
     def get_shot(self,board):
-        hit_chances = []
+        low_num = 9999
         points = []
+        # get lowest num
+        for i in range(len(self.heat_map)):
+            for j in range(len(self.heat_map)):
+                if int(self.heat_map[i][j]) < low_num:
+                    low_num = int(self.heat_map[i][j])
         
-        # find the chances of each space on the board
-        for i in range(len(board.spaces)):
-            hit_chances.append([])
-            for j in range(len(board.spaces[len(board.spaces[i]) - 1])):
-                open_spaces = self.find_open_space(board, [i,j])
-                hit_chances[i].append(open_spaces[0] + open_spaces[1])
-        
-        highest = 0  
-        # find the highest chance      
-        for i in range(len(hit_chances)):
-            for j in range(len(hit_chances[len(hit_chances[i]) - 1])):
-                if hit_chances[j][i] > 0:
-                    highest = hit_chances[j][i]
-        
-        # find all points that have the highest chance            
-        for i in range(len(hit_chances)):
-            for j in range(len(board.spaces[len(hit_chances[i]) - 1])):
-                if hit_chances[j][i] == highest:
-                    points.append([j,i])
-        
+        # list all of the smallest points on the heat map            
+        for i in range(len(self.heat_map)):
+            for j in range(len(self.heat_map)):
+                if int(self.heat_map[i][j]) == low_num:
+                    points.append([i,j])
+                    
         # select one of them to be the lucky winner                               
         return random.choice(points)
+    
+    
     def place_ships(self, board, ships):
         # grab the stats board
         stats = self.read_stats() 
@@ -220,12 +242,45 @@ class AI_Expert(object):
                     if user_board.spaces[i][j] == key:
                         ships[key] = False        
         
+    def is_valid_shot(self, point, board):
+        if self.is_not_out_of_bounds(point, board):
+            if board.spaces[point[0]][point[1]] != 'X':
+                if board.spaces[point[0]][point[1]] != 'O':
+                    if board.spaces[point[0]][point[1]] != '*':
+                        return True
+        return False
+    def update_heat_map(self, point, board):
+        up = True
+        down = True
+        right = True
+        left = True
+        heat_value = 4
+        self.heat_map[point[0]][point[1]] = '99'
+        for i in range(1, 5):
             
-    def is_ship_possible(self, point, user_board):
-        ''' 
-        TODO: Have the AI check to see if the point could possibly have a ship.
-        '''
-        pass
+            if up:
+                if self.is_valid_shot([point[0] - i, point[1]], board): 
+                    self.heat_map[point[0] - i][point[1]] = str(heat_value + int(self.heat_map[point[0] - i][point[1]]))
+                else:
+                    up = False
+            if down:
+                if self.is_valid_shot([point[0] + i, point[1]], board): 
+                    self.heat_map[point[0] + i][point[1]] = str(heat_value + int(self.heat_map[point[0] + i][point[1]]))
+                else:
+                    down = False
+            if right:
+                if self.is_valid_shot([point[0], point[1] + i], board): 
+                    self.heat_map[point[0]][point[1] + i] = str(heat_value + int(self.heat_map[point[0]][point[1] + i]))
+                else:
+                    right = False
+            if left:
+                if self.is_valid_shot([point[0], point[1] - 1], board): 
+                    self.heat_map[point[0]][point[1] - i] = str(heat_value + int(self.heat_map[point[0]][point[1] - i]))
+                else:
+                    left = False
+            heat_value -= 1
+            
+
         
     def get_direction(self):
         if self.attempt == 1 or self.attempt == 2:
@@ -286,7 +341,6 @@ class AI_Expert(object):
             # clu is seeking a ship                     
             else:
                 point = self.get_shot(user_board)
-                self.is_ship_possible(point, user_board)
             
             # check if shot is in boundaries
             if point[0] >= 0 and point[0] <= 9 and point[1] >= 0 and point[1] <= 9 :
@@ -334,7 +388,10 @@ class AI_Expert(object):
                         if user_board.spaces[i][j] == 'X':
                             self.sinking_ship = True
                             self.first_hit = [i,j] 
-          
+        
+        print "hello"
+        self.update_heat_map(point, user_board) 
+        self.display_heat() 
 
         
         
