@@ -94,10 +94,6 @@ class AI_Easy(object):
                             best_loc[k][0] = i 
                             best_loc[k][1] = j - k                   
         
-        print "Best location found for a size " + str(size) + " ship at coordinates: "    
-        print best_loc
-        print "Total time area has been shot:"
-        print str(lowest_num)
         return best_loc 
     
     def place_ship(self, points, board, stats, size, key):  
