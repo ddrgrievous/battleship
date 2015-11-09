@@ -37,7 +37,6 @@ class Start_Player(object):
                 self.ship_stats[row_num] = line.replace("\n", "").split(',')
                 row_num += 1
         
-        print self.ship_stats
                 
     def parse_input(self, input):
         point = []

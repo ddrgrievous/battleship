@@ -20,6 +20,7 @@ class Board(object):
         #print self.spaces[0][0]         
         
     def display(self):
+        print '\n '
         sys.stdout.write("  ")
         for i in range(0, len(self.spaces)):
             sys.stdout.write( " " + str(i))
@@ -27,7 +28,12 @@ class Board(object):
             for x in range(0, len(self.spaces[y])):
                 if x == 0:
                     print "\n" + string.ascii_uppercase[y] + " |" + self.spaces[y][x] + "|",
+                elif x == 9:
+                    sys.stdout.write(self.spaces[y][x] + "| " + string.ascii_uppercase[y])
                 else:                
                     sys.stdout.write(self.spaces[y][x] + "|")
-        print'\n'
-               
+        sys.stdout.write("\n  ")
+        for i in range(0, len(self.spaces)):
+            sys.stdout.write( " " + str(i))
+        print '\n '
+        

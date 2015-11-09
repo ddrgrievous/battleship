@@ -224,6 +224,7 @@ if __name__ == '__main__':
     print "**********************"
     print "Welcome to Battleship!"
     print "**********************"
-    #player_vs_computer()
-    computer_vs_computer_many()  
+    print "Jared Wrathall"
+    player_vs_computer()
+    #computer_vs_computer_many()  
     # computers_vs_computer_one() 
