@@ -157,7 +157,7 @@ def computer_vs_computer_many():
     games_played = 0
     tron_wins = 0
     clu_wins = 0
-    while games_played < 2:
+    while games_played < 1000:
         ships = {'P' : 2, # Patrol Boat
                  'D' : 3, # Destroyer
                  'S' : 3, # Submarine
@@ -172,7 +172,7 @@ def computer_vs_computer_many():
         original_tron.spaces = deepcopy(tron_board.spaces);
         
         # create clu
-        clu = AI_Novice()
+        clu = AI_Intermediate()
         clu_board = Board(10,10)
         clu.place_ships(clu_board, ships)
         original_clu = Board(10,10)
@@ -190,9 +190,9 @@ def computer_vs_computer_many():
                 }
             # Tron's Turn
             print "tron's turn..."
-            time.sleep( 2 )
+            #time.sleep( 2 )
             tron.take_turn(clu_board, original_clu)
-            clu_board.display()
+            #clu_board.display()
             tron.which_ships_are_sunk(bool_ships, clu_board)
             if is_win(bool_ships):
                 print "game over tron wins"
@@ -207,9 +207,9 @@ def computer_vs_computer_many():
                 }
             # Clu's turn
             print "Clu's turn..."
-            time.sleep( 2 )
+            #time.sleep( 2 )
             clu.take_turn(tron_board, original_tron)
-            tron_board.display()
+            #tron_board.display()
             clu.which_ships_are_sunk(bool_ships, tron_board)
             if is_win(bool_ships):
                 print "game over clu wins"

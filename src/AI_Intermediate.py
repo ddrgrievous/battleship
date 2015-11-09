@@ -254,11 +254,23 @@ class AI_Intermediate(object):
             return [self.first_hit[0], self.first_hit[1] + (self.distance * -1)]         
     def take_turn(self, user_board, original_user_board):
         invalid_point = True
+        invalid_count = 0
         while invalid_point:
+            invalid_count += 1
             
             # if clu found a ship
             if self.sinking_ship:
-                point = self.sink_ship() 
+                point = self.sink_ship()
+                if invalid_count == 6:
+                    points = []
+                    invalid_count = 0
+                    for i in range(len(user_board.spaces)):
+                        for j in range(len(user_board.spaces)): 
+                            if user_board.spaces[i][j] == 'X':
+                                self.sinking_ship = True
+                                points.append([i,j])
+                                self.first_hit = random.choice(points)
+                    
             # clu is seeking a ship                     
             else:
                 point = [randint(0,9), randint(0,9)]
