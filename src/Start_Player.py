@@ -32,7 +32,7 @@ class Start_Player(object):
             
             
         # loop through the file to get the stats       
-        with open('ship_stats.txt') as openfileobject:
+        with open('data\ship_stats') as openfileobject:
             for line in openfileobject:
                 self.ship_stats[row_num] = line.replace("\n", "").split(',')
                 row_num += 1
@@ -41,42 +41,47 @@ class Start_Player(object):
     def parse_input(self, input, board):
         isvalidInput = True
         point = []
+    
         while isvalidInput:
-            if (len(input) < 2):
-                print "Invalid Input!"
-                input = raw_input("Try Again: ")  
-            elif((input[0].isalpha() and (not(self.key.has_key(input[0])))) and (input[1].isalpha() and (not(self.key.has_key(input[1]))))):
-                print "Invalid Input!"
-                input = raw_input("Try Again: ")   
-            elif(len(input) >= 3 or (input[0].isdigit() and int(input[0]) > 9) or (input[1].isdigit() and int(input[1]) > 9)):
-                print "Invalid Input!"
-                input = raw_input("Try Again: ")
-            elif input[0].isdigit():
-                if input[1].upper() in self.key:
-                    point.append(self.key[input[1].upper()])
-                    point.append(int(input[0]))
-                    isvalidInput = False
+            try:
+                if (len(input) < 2):
+                    print "Invalid Input!"
+                    input = raw_input("Try Again: ")  
+                elif((input[0].isalpha() and (not(self.key.has_key(input[0])))) and (input[1].isalpha() and (not(self.key.has_key(input[1]))))):
+                    print "Invalid Input!"
+                    input = raw_input("Try Again: ")   
+                elif(len(input) >= 3 or (input[0].isdigit() and int(input[0]) > 9) or (input[1].isdigit() and int(input[1]) > 9)):
+                    print "Invalid Input!"
+                    input = raw_input("Try Again: ")
+                elif input[0].isdigit() and (input[1].isalpha()):
+                    if input[1].upper() in self.key:
+                        point.append(self.key[input[1].upper()])
+                        point.append(int(input[0]))
+                        isvalidInput = False
+                    else:
+                        print "Invalid Input!"
+                        input = raw_input("Try Again: ") 
+                elif input[0].isalpha() and (input[1].isdigit()):
+                    if input[0].upper() in self.key:
+                        point.append(self.key[input[0].upper()])
+                        point.append(int(input[1]))  
+                        isvalidInput = False 
+                    else:
+                        print "Invalid Input!"
+                        input = raw_input("Try Again: ")                     
                 else:
                     print "Invalid Input!"
-                    input = raw_input("Try Again: ") 
-            elif input[0].isalpha():
-                if input[0].upper() in self.key:
-                    point.append(self.key[input[0].upper()])
-                    point.append(int(input[1]))  
-                    isvalidInput = False 
-                else:
-                    print "Invalid Input!"
-                    input = raw_input("Try Again: ")                     
-            else:
+                    input = raw_input("Try Again: ")                
+                    
+                if isvalidInput == False:
+                    if board.spaces[point[0]][point[1]] != ' ':
+                        print "Space is already full!"
+                        input = raw_input("Try Again: ") 
+                        isvalidInput = True    
+                        point = [] 
+            except:
                 print "Invalid Input!"
-                input = raw_input("Try Again: ")                
-                
-            if isvalidInput == False:
-                if board.spaces[point[0]][point[1]] != ' ':
-                    print "Space is already full!"
-                    input = raw_input("Try Again: ") 
-                    isvalidInput = True     
-                  
+                input = raw_input("Try Again: ")                      
         return point
     
     def find_ship_length(self, point1, point2):
@@ -254,7 +259,7 @@ class Start_Player(object):
                     else:
                         print "invalid input size"  
         
-        ship_stats_file = open('ship_stats.txt','w')
+        ship_stats_file = open('data\ship_stats','w')
         s = "";
         for i in range(len(self.ship_stats)):
             s = "";
@@ -265,3 +270,4 @@ class Start_Player(object):
                     s += ',' + str(self.ship_stats[i][j])
             
             ship_stats_file.write(s +'\n')
+        ship_stats_file.close()

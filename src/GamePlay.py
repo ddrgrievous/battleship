@@ -76,6 +76,7 @@ def player_vs_computer():
                 }
             user.which_ships_are_sunk(bool_ships, clu_board)
             if is_win(bool_ships):
+                user.save_shot_map()
                 print "Game over you win!"
                 break
             
@@ -93,11 +94,13 @@ def player_vs_computer():
             user_hit_board.display()
             clu.which_ships_are_sunk(bool_ships, user_board)
             if is_win(bool_ships):
+                user.save_shot_map()
                 print "Game over clu wins!"
-                response = raw_input("Play Again? (y/n) ")
-                if response.lower() == 'n':
-                    still_playing = False
                 break
+        response = raw_input("Play Again? (y/n) ")
+        if response.lower() == 'n':
+            still_playing = False
+        
 
 ''' One Game computer vs computer '''
 def computers_vs_computer_one():

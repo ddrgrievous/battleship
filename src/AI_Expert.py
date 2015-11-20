@@ -71,13 +71,13 @@ class AI_Expert(object):
             
             
         # loop through the file to get the stats       
-        with open('stats') as openfileobject:
+        with open('shot_map') as openfileobject:
             for line in openfileobject:
                 spaces[row_num] = line.replace("\n", "").split(',')
                 row_num += 1
         for i in range(len(spaces)):
             for j in range(len(spaces)):
-                spaces[i][j] = str(int(spaces[i][j]) + randint(0,9))  
+                spaces[i][j] = str(int(spaces[i][j]) + randint(0,4))  
                    
         return spaces 
     

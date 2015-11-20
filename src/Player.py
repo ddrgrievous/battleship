@@ -33,6 +33,18 @@ class Player(object):
             'B' : 4, # Battleship
             'A' : 5  # Aircraft Carrier
             }
+        self.turn_count = 1;
+        self.shot_map = []
+        row_num = 0
+        for i in range(0,10):
+            self.shot_map.append([])
+            
+            
+        # loop through the file to get the stats       
+        with open('shot_map') as openfileobject:
+            for line in openfileobject:
+                self.shot_map[row_num] = line.replace("\n", "").split(',')
+                row_num += 1
     
     def take_turn(self, user_hit_board, clu_board, original_clu_board):
         input = raw_input("Coordinate of your shot: " );
@@ -46,6 +58,42 @@ class Player(object):
             clu_board.spaces[point[0]][point[1]]      = 'X'
             print "Sir we have hit the enemy ship!"
             self.is_ship_sunk(clu_board, original_clu_board, user_hit_board)
+            
+        self.update_shot_map(point, user_hit_board.spaces)
+            
+    def update_shot_map(self, shot_point, spaces):
+        is_exploration = True
+        for i in range(0,10):
+            for j in range(0,10):
+                if spaces[i][j].lower() == 'x':
+                    is_exploration = False
+        #determine the value to assign to the shot map       
+        if not is_exploration:
+            self.shot_map[shot_point[0]][shot_point[1]] = '1'
+        elif self.turn_count <= 10:
+            self.shot_map[shot_point[0]][shot_point[1]] = '3'
+        elif self.turn_count <= 20:
+            self.shot_map[shot_point[0]][shot_point[1]] = '2'
+        else:
+            self.shot_map[shot_point[0]][shot_point[1]] = '1'
+
+        #increment turn count
+        if is_exploration:
+            self.turn_count += 1 
+            
+    def save_shot_map(self):  
+        ship_map_file = open('shot_map','w')
+        s = "";
+        for i in range(len(self.shot_map)):
+            s = "";
+            for j in range(len(self.shot_map)):
+                if j == 0:
+                    s += str(self.shot_map[i][j])
+                else:
+                    s += ',' + str(self.shot_map[i][j])
+            
+            ship_map_file.write(s +'\n')
+        ship_map_file.close()     
             
     def is_ship_sunk(self, user_board, original_board, user_hit_board):
         key = ''
