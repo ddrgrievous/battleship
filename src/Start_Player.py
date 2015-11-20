@@ -38,15 +38,45 @@ class Start_Player(object):
                 row_num += 1
         
                 
-    def parse_input(self, input):
+    def parse_input(self, input, board):
+        isvalidInput = True
         point = []
-        if(len(input) >= 3 or input[0].isdigit() or input[1].isalpha()):
-            print "Invalid Input!"
-            return
-
-        point.append(self.key[input[0].upper()])
-        point.append(int(input[1]))
-        
+        while isvalidInput:
+            if (len(input) < 2):
+                print "Invalid Input!"
+                input = raw_input("Try Again: ")  
+            elif((input[0].isalpha() and (not(self.key.has_key(input[0])))) and (input[1].isalpha() and (not(self.key.has_key(input[1]))))):
+                print "Invalid Input!"
+                input = raw_input("Try Again: ")   
+            elif(len(input) >= 3 or (input[0].isdigit() and int(input[0]) > 9) or (input[1].isdigit() and int(input[1]) > 9)):
+                print "Invalid Input!"
+                input = raw_input("Try Again: ")
+            elif input[0].isdigit():
+                if input[1].upper() in self.key:
+                    point.append(self.key[input[1].upper()])
+                    point.append(int(input[0]))
+                    isvalidInput = False
+                else:
+                    print "Invalid Input!"
+                    input = raw_input("Try Again: ") 
+            elif input[0].isalpha():
+                if input[0].upper() in self.key:
+                    point.append(self.key[input[0].upper()])
+                    point.append(int(input[1]))  
+                    isvalidInput = False 
+                else:
+                    print "Invalid Input!"
+                    input = raw_input("Try Again: ")                     
+            else:
+                print "Invalid Input!"
+                input = raw_input("Try Again: ")                
+                
+            if isvalidInput == False:
+                if board.spaces[point[0]][point[1]] != ' ':
+                    print "Space is already full!"
+                    input = raw_input("Try Again: ") 
+                    isvalidInput = True     
+                  
         return point
     
     def find_ship_length(self, point1, point2):
@@ -185,7 +215,7 @@ class Start_Player(object):
                     input = raw_input("Start coordinate of your ship of size " + str(ships[key]) + ": ")
                     
                     # parse user input into a point
-                    point1 = self.parse_input(input)
+                    point1 = self.parse_input(input,board)
                     
                     # if point array has 2 values and the space doesn't have a ship already
                     if (len(point1) == 2) and (board.spaces[point1[0]][point1[1]] == ' '):                    
@@ -208,7 +238,7 @@ class Start_Player(object):
                     input = raw_input("End coordinate of your ship of size "   + str(ships[key]) + ": ")
                     
                     # parse user input into point
-                    point2= self.parse_input(input)
+                    point2= self.parse_input(input, board)
                     
                     # determine the size of the ship they have created
                     size = self.find_ship_length(point1,point2) + 1

@@ -36,7 +36,7 @@ class Player(object):
     
     def take_turn(self, user_hit_board, clu_board, original_clu_board):
         input = raw_input("Coordinate of your shot: " );
-        point = self.parser.parse_input(input)
+        point = self.parser.parse_input(input, user_hit_board)
         
         if clu_board.spaces[point[0]][point[1]] == ' ':
             user_hit_board.spaces[point[0]][point[1]] = 'O'
