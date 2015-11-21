@@ -44,7 +44,7 @@ class AI_Master(object):
             
             
         # loop through the file to get the stats       
-        with open('heat_map_1') as openfileobject:
+        with open('data\heat_map_1') as openfileobject:
             for line in openfileobject:
                 self.heat_map[row_num] = line.replace("\n", "").split(',')
                 row_num += 1
@@ -71,7 +71,7 @@ class AI_Master(object):
             
             
         # loop through the file to get the stats       
-        with open('stats') as openfileobject:
+        with open('data\shot_map') as openfileobject:
             for line in openfileobject:
                 spaces[row_num] = line.replace("\n", "").split(',')
                 row_num += 1

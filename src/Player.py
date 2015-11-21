@@ -41,7 +41,7 @@ class Player(object):
             
             
         # loop through the file to get the stats       
-        with open('shot_map') as openfileobject:
+        with open('data\shot_map') as openfileobject:
             for line in openfileobject:
                 self.shot_map[row_num] = line.replace("\n", "").split(',')
                 row_num += 1
@@ -82,7 +82,7 @@ class Player(object):
             self.turn_count += 1 
             
     def save_shot_map(self):  
-        ship_map_file = open('shot_map','w')
+        ship_map_file = open('data/shot_map','w')
         s = "";
         for i in range(len(self.shot_map)):
             s = "";

@@ -1,3 +1,5 @@
+from Game_Stats import Game_Stats
+import os
 from Board import Board
 from AI_Master import AI_Master
 from AI_Expert import AI_Expert
@@ -22,7 +24,7 @@ def player_vs_computer():
     while still_playing: 
         not_valid_input = True  
         while not_valid_input:
-            level = raw_input("Easy, Medium or Hard? ")
+            level = 'hard'
              # create AI
             if level.lower() == 'easy':    
                 clu = AI_Easy()
@@ -64,7 +66,10 @@ def player_vs_computer():
         user_hit_board.display()
         no_winner = True
         # Let the Games BEGIN!
+        round_count = 0
         while no_winner:
+
+            round_count += 1
             ''' USER MOVE'''
             user.take_turn(user_hit_board, clu_board, original_clu_board)
             user_hit_board.display()
@@ -77,12 +82,14 @@ def player_vs_computer():
             user.which_ships_are_sunk(bool_ships, clu_board)
             if is_win(bool_ships):
                 user.save_shot_map()
+                Game_Stats.write_game_stats(1, round_count, 0, 1)
                 print "Game over you win!"
                 break
             
+
             ''' CLU's TURN '''
             print "Clu's turn..."
-            time.sleep( 2 )       
+               
             bool_ships = {'P' : True, # Patrol Boat
                  'D' : True, # Destroyer
                  'S' : True, # Submarine
@@ -91,10 +98,12 @@ def player_vs_computer():
                 }
             clu.take_turn(user_board, original_user_board)
             user_board.display()
+            print '\n-------------------------'
             user_hit_board.display()
             clu.which_ships_are_sunk(bool_ships, user_board)
             if is_win(bool_ships):
                 user.save_shot_map()
+                Game_Stats.write_game_stats(1, round_count, 1, 0)
                 print "Game over clu wins!"
                 break
         response = raw_input("Play Again? (y/n) ")
